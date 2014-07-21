@@ -2,7 +2,7 @@ wecommender
 ===========
 
 Simple NodeJS wrapper for [vowpal wabbit](http://hunch.net/~vw/'s) [matrix factorization functionality](https://github.com/JohnLangford/vowpal_wabbit/wiki/Matrix-factorization-example).
-You can use this library like an [online-learning](http://en.wikipedia.org/wiki/Online_machine_learning) recommendation engine.
+You can use this library like an [online](http://en.wikipedia.org/wiki/Online_machine_learning) recommendation engine.
 
 QuickStart
 ----------
@@ -59,7 +59,7 @@ It's possible to pass custom parameters to `vw` through the options object.
     }
 
 I'll refer you to vowpal wabbit's documentation [here](https://github.com/JohnLangford/vowpal_wabbit/wiki/Tutorial) and [here](https://github.com/JohnLangford/vowpal_wabbit/wiki/Matrix-factorization-example) for explanations of
-these hyperparameters.
+these parameters.
 
 Additionally, wecommender's verbose logging can be toggled in a similar way:
 
