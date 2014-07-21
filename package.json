@@ -1,0 +1,24 @@
+{
+  "name": "wecommender",
+  "version": "0.0.1",
+  "description": "Simple wrapper for vowpal wabbit's recommendation engine",
+  "main": "./wecommender.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/omphalos/wecommender.js"
+  },
+  "keywords": [
+    "machine",
+    "learning",
+    "vowpal",
+    "wabbit",
+    "recommender",
+    "recommendation",
+    "matrix",
+    "factorization",
+    "online",
+    "out-of-core"
+  ],
+  "author": "omphalos",
+  "license": "MIT"
+}
