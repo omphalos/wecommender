@@ -108,6 +108,10 @@ function run(name, args, verbose) {
     })
   })
 
+  proc.on('error' ,function(err) {
+    throw new Error(name + ' encountered error: ' + JSON.stringify(err || {}))
+  })
+
   proc.stderr.on('data', function (data) {
     if(!/^execvp\(\)/.test(data)) return
     throw new Error(name + ' failed to start')
