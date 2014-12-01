@@ -51,6 +51,7 @@ It's possible to pass custom parameters to `vw` through the options object.
 
     w.options = {
       bits: 18, // default is 18 (bits used in the hash function)
+      cwd: '/models', // default is '.' (current working directory for vw)
       initialT: 0.9, // default is 1 (initial time for learning rate decay)
       l2: 0.002, // default is 0.001 (l2 regularization to prevent overfitting)
       learningRate: 0.1, // default is 0.015

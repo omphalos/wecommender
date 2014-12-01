@@ -1,7 +1,8 @@
 'use strict'
 
 var spawn = require('child_process').spawn
-  , exists = require('fs').existsSync('./model.reg')
+  , fs = require('fs')
+  , path = require('path')
   , pending = []
   , callbacks = []
   , instance
@@ -12,6 +13,7 @@ function start() {
     throw new Error('An instance is already running')
 
   var options = exports.options || {}
+    , cwd = options.cwd || '.'
 
   var args = [
     '/dev/stdin',
@@ -27,10 +29,10 @@ function start() {
     '--power_t', options.powerT || '0'
   ]
 
-  if(exists)
+  if(fs.existsSync(path.join(cwd, 'model.reg')))
     args.push('-i', 'model.reg')
 
-  instance = run('vw', args, options.verbose)
+  instance = run('vw', args, options.verbose, cwd)
 
   instance.stdout.on('data', function(data) {
     var lines = data.toString().split('\n')
@@ -41,8 +43,6 @@ function start() {
       callback && callback(+line)
     }
   })
-
-  exists = true
 }
 exports.start = start
 
@@ -86,13 +86,13 @@ function close() {
 }
 exports.close = close
 
-function run(name, args, verbose) {
+function run(name, args, verbose, cwd) {
 
-  var proc = spawn(name, args)
+  var proc = spawn(name, args, { cwd: cwd })
     , log = verbose ? console.log : function() {}
 
   log('running: ' + name + ' ' + args.join(' '))
-  proc.stdin.setEncoding = 'utf8'
+  proc.stdin.setEncoding('utf8')
   proc.stderr.setEncoding('utf8')
   proc.stdout.setEncoding('utf8')
 
