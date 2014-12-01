@@ -24,11 +24,11 @@ Then:
     w.rate(2, 1, 1)
     w.rate(2, 2, 1)
 
-    // recommend takes (userID, itemID, callback)
-    w.recommend(1, 1, console.log)
-    w.recommend(1, 2, console.log)
-    w.recommend(2, 1, console.log)
-    w.recommend(2, 2, console.log)
+    // getRecommendation takes (userID, itemID, callback)
+    w.getRecommendation(1, 1, console.log)
+    w.getRecommendation(1, 2, console.log)
+    w.getRecommendation(2, 1, console.log)
+    w.getRecommendation(2, 2, console.log)
 
     // save learning state
     w.save()
