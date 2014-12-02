@@ -16,7 +16,6 @@ function start() {
     , cwd = options.cwd || '.'
 
   var args = [
-    '/dev/stdin',
     '--quiet',
     '-p', '/dev/stdout',
     '-q', 'ui',
@@ -32,17 +31,7 @@ function start() {
   if(fs.existsSync(path.join(cwd, 'model.reg')))
     args.push('-i', 'model.reg')
 
-  instance = run('vw', args, options.verbose, cwd)
-
-  instance.stdout.on('data', function(data) {
-    var lines = data.toString().split('\n')
-    while(lines.length) {
-      var line = lines.shift()
-      if(line === '') continue
-      var callback = callbacks.shift()
-      callback && callback(+line)
-    }
-  })
+  run(args, options.verbose, cwd)
 }
 exports.start = start
 
@@ -86,42 +75,51 @@ function close() {
 }
 exports.close = close
 
-function run(name, args, verbose, cwd) {
+function run(args, verbose, cwd) {
 
-  var proc = spawn(name, args, { cwd: cwd })
-    , log = verbose ? console.log : function() {}
+  var log = verbose ? console.log : function() {}
 
-  log('running: ' + name + ' ' + args.join(' '))
-  proc.stdin.setEncoding('utf8')
-  proc.stderr.setEncoding('utf8')
-  proc.stdout.setEncoding('utf8')
+  instance = spawn('vw', args, { cwd: cwd })
+
+  log('running: vw ' + args.join(' '))
+  instance.stdin.setEncoding('utf8')
+  instance.stderr.setEncoding('utf8')
+  instance.stdout.setEncoding('utf8')
 
   ;['stderr', 'stdout'].forEach(function(key) {
-    proc[key].on('data', function(data) {
-      log(data.
-        toString().
-        split('\n').
-        map(function(line) {
-          var leader = name + '~' + key
-          return line ? leader + ': ' + line : leader
-        }).join('\n'))
+
+    instance[key].on('data', function(data) {
+      log(data.toString().split('\n').map(prefix).join('\n'))
     })
+
+    function prefix(line) {
+      var leader = 'vw~' + key
+      return line ? leader + ': ' + line : leader
+    }
   })
 
-  proc.on('error' ,function(err) {
-    throw new Error(name + ' encountered error: ' + JSON.stringify(err || {}))
+  instance.on('error' ,function(err) {
+    throw new Error('vw encountered error: ' + JSON.stringify(err || {}))
   })
 
-  proc.stderr.on('data', function (data) {
+  instance.stderr.on('data', function (data) {
     if(!/^execvp\(\)/.test(data)) return
-    throw new Error(name + ' failed to start')
+    throw new Error('vw failed to start')
   })
 
-  proc.on('close', function (code) {
-    log(name + ' exited with code ' + code)
+  instance.on('close', function (code) {
+    log('vw exited with code ' + code)
   })
 
-  return proc
+  instance.stdout.on('data', function(data) {
+    var lines = data.toString().split('\n')
+    while(lines.length) {
+      var line = lines.shift()
+      if(line === '') continue
+      var callback = callbacks.shift()
+      callback && callback(+line)
+    }
+  })
 }
 
 function write(str) {
